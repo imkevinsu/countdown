@@ -1,74 +1,77 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link href="https://fonts.googleapis.com/css2?family=Fjalla+One&display=swap" rel="stylesheet">
-    <title>Time Left Until 15:00</title>
-    <style>
-        body {
-            text-align: center;
-            font-family: 'Fjalla One', sans-serif;
-            background-color: #fff;
-        }
-        .box {
-            display: inline-block;
-            color: #fff;
-            padding: 10px;
-            border-radius: 5px;
-            min-width: 40px;
-        }
-        #hours {
-            background-color: #4CAF50;
-        }
-        #minutes {
-            background-color: #76250b;
-        }
-        h2 {
-            display: inline-block;
-            margin-right: 10px;
-            margin-block-start: 5px;
-        }
-        .small {
-            font-size: 15px;
-            font-weight: lighter;
-        }
-    </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Countdown Timer to 15:00</title>
+<style>
+    body {
+        text-align: center;
+        font-family: Arial, sans-serif;
+        background-color: #333; /* Dark background for contrast */
+        color: #fff; /* White text */
+        margin-top: 50px; /* Add some space at the top of the page */
+    }
+    .timer-box {
+        background-color: #000; /* Black boxes */
+        border-radius: 10px; /* Rounded corners */
+        display: inline-block;
+        margin: 5px;
+        padding: 20px;
+        width: 100px; /* Fixed width */
+        box-shadow: 0 4px 8px rgba(0,0,0,0.5); /* Shadow for depth */
+    }
+    .timer-box .number {
+        font-size: 48px; /* Large font size */
+        font-weight: bold; /* Bold font for the numbers */
+    }
+    .timer-box .text {
+        font-size: 18px; /* Smaller font size */
+        font-weight: normal; /* Normal font weight for the text */
+        margin-top: 10px; /* Space between number and text */
+    }
+</style>
 </head>
 <body>
-    <h2 class="box" id="hours"></h2>
-    <h2 class="box" id="minutes"></h2>
 
-    <script>
-        var left_hours, left_minutes;
+<div id="timer">
+    <div class="timer-box">
+        <div id="hours" class="number">00</div>
+        <div class="text">Hours</div>
+    </div>
+    <div class="timer-box">
+        <div id="minutes" class="number">00</div>
+        <div class="text">Mins</div>
+    </div>
+    <div class="timer-box">
+        <div id="seconds" class="number">00</div>
+        <div class="text">Sec</div>
+    </div>
+</div>
 
-        function CountDownTimer() {
-            left_hours = document.getElementById("hours");
-            left_minutes = document.getElementById("minutes");
+<script>
+    function updateTimer() {
+        var now = new Date();
+        var end = new Date(now.getFullYear(), now.getMonth(), now.getDate(), 15, 0, 0); // 15:00 on the current day
+        var totalSeconds = Math.floor((end - now) / 1000);
+
+        var hours = Math.floor(totalSeconds / 3600);
+        totalSeconds %= 3600;
+        var minutes = Math.floor(totalSeconds / 60);
+        var seconds = totalSeconds % 60;
+
+        document.getElementById('hours').textContent = hours < 10 ? '0' + hours : hours;
+        document.getElementById('minutes').textContent = minutes < 10 ? '0' + minutes : minutes;
+        document.getElementById('seconds').textContent = seconds < 10 ? '0' + seconds : seconds;
+
+        if (totalSeconds <= 0) {
+            clearInterval(timerInterval); // Stop the timer when it reaches 15:00
         }
+    }
 
-        function showRemaining() {
-            var now = new Date();
-            var endTime = new Date(now.getFullYear(), now.getMonth(), now.getDate(), 15, 0, 0); // Set end time to 15:00 hours
+    var timerInterval = setInterval(updateTimer, 1000);
+    updateTimer(); // Initial call to set the correct values immediately
+</script>
 
-            var timeDifference = endTime - now;
-
-            if (timeDifference > 0) {
-                // If current time is before 15:00
-                var hours = Math.floor(timeDifference / (1000 * 60 * 60));
-                var minutes = Math.floor((timeDifference % (1000 * 60 * 60)) / (1000 * 60));
-
-                left_hours.innerHTML = hours + "<br> <span class=\"small\"> hours</span>";
-                left_minutes.innerHTML = minutes + "<br> <span class=\"small\">mins</span>";
-            } else {
-                // If current time is after 15:00
-                left_hours.innerHTML = "0<br> <span class=\"small\"> hours</span>";
-                left_minutes.innerHTML = "0<br> <span class=\"small\">mins</span>";
-            }
-        }
-
-        timer = setInterval(showRemaining, 1000);
-        CountDownTimer();
-    </script>
 </body>
 </html>
